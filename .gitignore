@@ -1,3 +1,5 @@
+notebooks
+
 .DS_Store
 dist/electron/*
 dist/web/*

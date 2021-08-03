@@ -7,8 +7,15 @@ import store from './store'
 
 import 'bulma/css/bulma.css'
 
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faFolderOpen } from '@fortawesome/free-regular-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
+
+library.add(faFolderOpen)
+Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

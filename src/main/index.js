@@ -27,9 +27,9 @@ function createWindow () {
     useContentSize: false,
     webPreferences: {
       webSecurity: false
-    }
+    },
+    autoHideMenuBar: true
   })
-
   mainWindow.loadURL(winURL)
 
   mainWindow.on('closed', () => {

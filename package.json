@@ -58,10 +58,13 @@
     "@fortawesome/free-regular-svg-icons": "^5.15.3",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/vue-fontawesome": "^2.0.2",
+    "@vue/cli": "^4.5.13",
     "@vue/composition-api": "^1.0.5",
     "axios": "^0.21.1",
     "bulma": "^0.9.3",
-    "vue": "^2.5.16",
+    "viewerjs": "^1.10.1",
+    "vue": "^2.6.14",
+    "vue-cropperjs": "^4.2.0",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
     "vue-use-web": "^1.0.1",
@@ -69,6 +72,7 @@
     "vuex-electron": "^1.0.0"
   },
   "devDependencies": {
+    "@types/vue-cropperjs": "^4.1.2",
     "ajv": "^6.5.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.3",

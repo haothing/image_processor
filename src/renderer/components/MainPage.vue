@@ -2,8 +2,9 @@
   <div class="main-content">
 
     <div class="image-zone">
-        <img class="image-content" :src="currentImgPath">
+        <img id="image-content" class="image-content" :src="currentImgPath">
         <!-- <img class="image-content" src="static/images/001.jpg"> -->
+        <!-- <vue-cropper class="image-content" ref="cropper" :src="currentImgPath" :background="false" :autoCrop="false"/> -->
     </div>
     <div class='action-bar-container'>
         <div class="action-box action-bar">
@@ -28,6 +29,10 @@
 import path from 'path'
 import fs from 'fs'
 import { remote } from 'electron'
+// import VueCropper from 'vue-cropperjs'
+// import 'cropperjs/dist/cropper.css'
+import Viewer from 'viewerjs'
+import 'viewerjs/dist/viewer.css'
 
 export default {
   name: 'main-page',
@@ -39,10 +44,33 @@ export default {
       imgPathInDir: [],
       imgExt: ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'tif', 'tiff'],
       isNavLeft: false,
-      isNavRight: false
+      isNavRight: false,
+      viewer: null
     }
   },
   mounted () {
+    this.viewer = new Viewer(document.getElementById('image-content'), {
+      inline: true,
+      movable: false,
+      button: false,
+      navbar: false,
+      toolbar: {
+        zoomIn: 4,
+        zoomOut: 4,
+        oneToOne: {show: 1, size: 'large'},
+        reset: 4,
+        prev: {show: 1, size: 'small'},
+        play: {show: 1, size: 'large'},
+        next: 0,
+        rotateLeft: 4,
+        rotateRight: 4,
+        flipHorizontal: 4,
+        flipVertical: 4
+      },
+      viewed () {
+        this.viewer.zoomTo(0.8)
+      }
+    })
     document.addEventListener('drop', (e) => {
       e.preventDefault()
       e.stopPropagation()
@@ -70,13 +98,14 @@ export default {
     },
     setCurrentFile (filePath) {
       if (this.imgExt.indexOf(path.extname(filePath).toLowerCase().substr(1)) !== -1) {
+        this.$refs.cropper.replace(filePath)
         this.currentImgPath = filePath
         this.imgPathInDir = []
       } else {
         return
       }
 
-      let dir = path.dirname(this.currentImgPath)
+      let dir = path.dirname(filePath)
       fs.readdir(dir, (err, files) => {
         if (err) throw err
         const targetFiles = files.filter(file => {
@@ -95,15 +124,19 @@ export default {
     preImage () {
       if (this.imgPathInDir.length > 0) {
         this.currentImgIndex -= 1
-        if (this.currentImgIndex < 0) this.currentImgIndex = this.imgPathInDir.length - 1
-        this.currentImgPath = this.imgPathInDir[this.currentImgIndex]
+        if (this.currentImgIndex < 0) {
+          this.currentImgIndex = this.imgPathInDir.length - 1
+        }
+        this.$refs.cropper.replace(this.imgPathInDir[this.currentImgIndex])
       }
     },
     nextImage () {
       if (this.imgPathInDir.length > 0) {
         this.currentImgIndex += 1
-        if (this.currentImgIndex >= this.imgPathInDir.length) this.currentImgIndex = 0
-        this.currentImgPath = this.imgPathInDir[this.currentImgIndex]
+        if (this.currentImgIndex >= this.imgPathInDir.length) {
+          this.currentImgIndex = 0
+        }
+        this.$refs.cropper.replace(this.imgPathInDir[this.currentImgIndex])
       }
       this.x = this.$refs.offsetTop
     },
@@ -189,7 +222,8 @@ html, body {
 .image-content {
     max-height:100%;
     max-width:100%;
-    object-fit: scale-down;
     flex: 1 0 0;
+    object-fit: scale-down;
+    display: none;
 }
 </style>

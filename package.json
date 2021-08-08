@@ -112,6 +112,7 @@
     "style-loader": "^0.21.0",
     "url-loader": "^1.0.1",
     "vue-devtools": "^5.1.4",
+    "vue-force-next-tick": "^1.1.0",
     "vue-html-loader": "^1.2.4",
     "vue-loader": "^15.2.4",
     "vue-mouse-position": "0.0.2",

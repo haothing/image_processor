@@ -4,6 +4,7 @@ import axios from 'axios'
 import App from './App'
 import router from './router'
 import store from './store'
+import VueForceNextTick from 'vue-force-next-tick'
 
 import 'bulma/css/bulma.css'
 
@@ -17,6 +18,7 @@ Vue.http = Vue.prototype.$http = axios
 library.add(faFolderOpen)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.config.productionTip = false
+Vue.use(VueForceNextTick)
 
 /* eslint-disable no-new */
 new Vue({

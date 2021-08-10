@@ -1,0 +1,120 @@
+html, body {
+    height: 100%;
+    width: 100%;
+    background-color: #000000;
+}
+.cus-icon {
+    color: #000000;
+}
+::-webkit-scrollbar {
+    display: none;
+}
+.main-content {
+    height: 100%;
+    width: 100%;
+}
+.action-bar-container {
+    position: fixed;
+    left: 8px;
+    right: 8px;
+    bottom: 10px;
+    text-align: center;
+}
+.action-bar {
+    width: 950px;
+    height: 60px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    background: rgba(255,255,255,.2); 
+}
+.btn-nav {
+    width: 160px;
+    margin: auto 10px;
+}
+.btn-fun {
+    width: 40px;
+    margin: auto 10px;
+}
+.action-box {
+    border-radius: 20px;
+    box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02);
+}
+.nav-box-right {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    width: 15%;
+    height: 100%;
+    background: rgba(255,255,255,.0); 
+}
+.nav-box-left {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    width: 15%;
+    height: 100%;
+    background: rgba(255,255,255,.0); 
+}
+.navActive {
+    background: rgba(255,255,255,.1);
+}
+.image-zone {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+}
+.image-content {
+    max-height:100%;
+    max-width:100%;
+    flex: 1 0 0;
+    object-fit: scale-down;
+    opacity: 0.4;
+}
+.image-content-fade {
+    transition: opacity .5s;
+    opacity: 1;
+}
+.image-shadow {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+}
+.image-content-shadow {
+    max-height:100%;
+    max-width:100%;
+    flex: 1 0 0;
+    object-fit: scale-down;
+}
+.image-content-shadow-fade {
+    transition: opacity .5s;
+    opacity: 0;
+}
+
+
+
+
+.fade-enter-active{
+  transition: opacity 5s;
+}
+.fade-enter {
+    opacity: 0.2;
+}
+/* .fade-enter-to {
+    opacity: 0;
+} */
+.fade-shadow-leave-active {
+    transition: opacity 1s;
+}
+.fade-shadow-leave-to {
+    opacity: 0;
+}

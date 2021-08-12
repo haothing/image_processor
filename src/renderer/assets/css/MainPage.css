@@ -26,10 +26,10 @@ html, body {
     margin: 0 auto;
     display: flex;
     justify-content: center;
-    background: rgba(255,255,255,.2); 
+    background: rgba(255,255,255,.3); 
 }
 .btn-nav {
-    width: 160px;
+    width: 180px;
     margin: auto 10px;
 }
 .btn-fun {
@@ -38,28 +38,31 @@ html, body {
 }
 .action-box {
     border-radius: 20px;
-    box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02);
+    box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.2), 0 0px 0 1px rgba(10, 10, 10, 0.1);
+}
+.nav-box {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    background: rgba(255,255,255,.0);
+        color: rgba(255,255,255,0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .nav-box-right {
-    position: fixed;
-    top: 0px;
     right: 0px;
-    bottom: 0px;
-    width: 15%;
+    width: 7.5%;
     height: 100%;
-    background: rgba(255,255,255,.0); 
 }
 .nav-box-left {
-    position: fixed;
-    top: 0px;
     left: 0px;
-    bottom: 0px;
-    width: 15%;
-    height: 100%;
-    background: rgba(255,255,255,.0); 
+    width: 7.5%;
+    height: 100%; 
 }
 .navActive {
-    background: rgba(255,255,255,.1);
+    background: rgba(255,255,255,.3);
+    color: rgba(255,255,255,.3);
 }
 .image-zone {
     height: 100%;
@@ -73,10 +76,10 @@ html, body {
     max-width:100%;
     flex: 1 0 0;
     object-fit: scale-down;
-    opacity: 0.4;
+    opacity: 0;
 }
 .image-content-fade {
-    transition: opacity .5s;
+    transition: opacity .4s;
     opacity: 1;
 }
 .image-shadow {
@@ -96,25 +99,6 @@ html, body {
     object-fit: scale-down;
 }
 .image-content-shadow-fade {
-    transition: opacity .5s;
-    opacity: 0;
-}
-
-
-
-
-.fade-enter-active{
-  transition: opacity 5s;
-}
-.fade-enter {
-    opacity: 0.2;
-}
-/* .fade-enter-to {
-    opacity: 0;
-} */
-.fade-shadow-leave-active {
-    transition: opacity 1s;
-}
-.fade-shadow-leave-to {
+    transition: opacity .1s;
     opacity: 0;
 }

@@ -1,6 +1,9 @@
 'use strict'
 
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, session, ipcMain } from 'electron'
+import os from 'os'
+import path from 'path'
+
 import '../renderer/store'
 
 /**
@@ -8,7 +11,7 @@ import '../renderer/store'
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
  */
 if (process.env.NODE_ENV !== 'development') {
-  global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+  global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
 let mainWindow
@@ -26,34 +29,44 @@ function createWindow () {
     width: 1000,
     useContentSize: false,
     webPreferences: {
-      webSecurity: false
+      webSecurity: false,
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true
     },
     autoHideMenuBar: true
   })
   mainWindow.loadURL(winURL)
-
+  mainWindow.webContents.on('before-input-event', (event, input) => {
+    if (input.type === 'keyUp' && input.key.toLowerCase() === 'escape') {
+      if (mainWindow.isFullScreen()) {
+        mainWindow.setFullScreen(false)
+      }
+      event.preventDefault()
+    }
+  })
   mainWindow.on('closed', () => {
     mainWindow = null
   })
 
   if (process.env.NODE_ENV === 'development') {
     // Add chrom vue-devtools extension
-    BrowserWindow.addDevToolsExtension('node_modules/vue-devtools/vender')
+    session.defaultSession.loadExtension('F:/repositories/workspaces/image_processor/node_modules/vue-devtools/vender', { allowFileAccess: true })
   }
 }
-
 app.on('ready', createWindow)
-
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
 })
-
 app.on('activate', () => {
   if (mainWindow === null) {
     createWindow()
   }
+})
+ipcMain.on('toggleFullScreen', (event, args) => {
+  mainWindow.setFullScreen(!mainWindow.isFullScreen())
 })
 /**
  * Auto Updater

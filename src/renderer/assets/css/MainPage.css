@@ -44,8 +44,8 @@ html, body {
     position: fixed;
     top: 0px;
     bottom: 0px;
-    background: rgba(255,255,255,.0);
-        color: rgba(255,255,255,0);
+    background: rgba(255,255,255,.3);
+    color: rgba(255,255,255,.3);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -59,10 +59,6 @@ html, body {
     left: 0px;
     width: 7.5%;
     height: 100%; 
-}
-.navActive {
-    background: rgba(255,255,255,.3);
-    color: rgba(255,255,255,.3);
 }
 .image-zone {
     height: 100%;
@@ -79,7 +75,7 @@ html, body {
     opacity: 0;
 }
 .image-content-fade {
-    transition: opacity .4s;
+    transition: opacity 1s;
     opacity: 1;
 }
 .image-shadow {
@@ -99,6 +95,25 @@ html, body {
     object-fit: scale-down;
 }
 .image-content-shadow-fade {
-    transition: opacity .1s;
+    transition: opacity .5s;
     opacity: 0;
+}
+.fade-action-bar-enter-active {
+  transition: opacity .4s;
+}
+.fade-action-bar-leave-active {
+  transition: opacity 4s;
+}
+.fade-action-bar-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
+.fade-nav-box-left-enter-active, .fade-nav-box-right-enter-active {
+  transition: opacity .4s;
+}
+.fade-nav-box-left-leave-active, .fade-nav-box-right-leave-active {
+  transition: opacity 2s;
+}
+.fade-nav-box-left-leave-to, .fade-nav-box-right-leave-to {
+  opacity: 0;
 }

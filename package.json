@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "author": "j.sun",
   "description": "An electron-vue project",
-  "license": null,
+  "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
@@ -68,6 +68,7 @@
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
     "vue-use-web": "^1.0.1",
+    "vuetify": "^2.5.8",
     "vuex": "^3.0.1",
     "vuex-electron": "^1.0.0"
   },
@@ -90,7 +91,7 @@
     "del": "^3.0.0",
     "devtron": "^1.4.0",
     "electron": "^13.1.9",
-    "electron-builder": "^20.19.2",
+    "electron-builder": "^22.11.7",
     "electron-debug": "^1.5.0",
     "electron-devtools-installer": "^2.2.4",
     "eslint": "^4.19.1",
@@ -120,7 +121,7 @@
     "vue-template-compiler": "^2.5.16",
     "webpack": "^4.15.1",
     "webpack-cli": "^3.0.8",
-    "webpack-dev-server": "^3.1.4",
+    "webpack-dev-server": "3.11.2",
     "webpack-hot-middleware": "^2.22.2",
     "webpack-merge": "^4.1.3"
   }

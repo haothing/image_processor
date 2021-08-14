@@ -1,7 +1,6 @@
 'use strict'
 
 import { app, BrowserWindow, session, ipcMain } from 'electron'
-import os from 'os'
 import path from 'path'
 
 import '../renderer/store'
@@ -16,7 +15,7 @@ if (process.env.NODE_ENV !== 'development') {
 
 let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
-  ? `http://localhost:9080`
+  ? `http://localhost:9990`
   : `file://${__dirname}/index.html`
 
 function createWindow () {
@@ -32,10 +31,12 @@ function createWindow () {
       webSecurity: false,
       nodeIntegration: true,
       contextIsolation: false,
-      enableRemoteModule: true
+      enableRemoteModule: true,
+      allowRunningInsecureContent: true
     },
     autoHideMenuBar: true
   })
+  mainWindow.removeMenu()
   mainWindow.loadURL(winURL)
   mainWindow.webContents.on('before-input-event', (event, input) => {
     if (input.type === 'keyUp' && input.key.toLowerCase() === 'escape') {
@@ -45,13 +46,24 @@ function createWindow () {
       event.preventDefault()
     }
   })
+  mainWindow.on('close', (e) => {
+    e.preventDefault()
+    mainWindow.destroy()
+  })
+
   mainWindow.on('closed', () => {
     mainWindow = null
   })
 
   if (process.env.NODE_ENV === 'development') {
-    // Add chrom vue-devtools extension
+    // require('vue-devtools').install()
     session.defaultSession.loadExtension('F:/repositories/workspaces/image_processor/node_modules/vue-devtools/vender', { allowFileAccess: true })
+    mainWindow.webContents.on('did-frame-finish-load', () => {
+      mainWindow.webContents.once('devtools-opened', () => {
+        mainWindow.focus()
+        // Add chrom vue-devtools extension
+      })
+    })
   }
 }
 app.on('ready', createWindow)

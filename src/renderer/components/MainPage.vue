@@ -1,69 +1,93 @@
 <template>
   <div class="main-content">
     <div class="image-zone">
-        <!-- <transition name="fade">
-            <img id="image-content" class="image-content" :class="{'image-content-fade': isImgFade}" v-show="isShowImg" :src="currentImgPath" :style="imageTransforms" 
-                @mousewheel="onWheel" @mousedown="onMouseDown" @mouseup="onMouseUp" @mouseout="onMouseOut" @mousemove="onMouseMove" @dblclick="onDbClick"
-                @load="onImgLoaded">
-        </transition> -->
-
         <img id="image-content" class="image-content" :class="{'image-content-fade': isImgFade}" 
-            v-show="showImg" :src="currentImgPath" :style="imageTransforms" 
+            v-show="showImg" :src="currentImgPath" :style="imageTransforms"
             @mousewheel="onWheel" @mousedown="onMouseDown" @mouseup="onMouseUp" @mouseout="onMouseOut" @mousemove="onMouseMove" 
-            @dblclick="onDbClick" @load="onImgLoaded">
+            @dblclick="onDbClick" @load="onImgLoaded" @transitionend="transitionendImg">
         <!-- <vue-cropper class="image-content" ref="cropper" :src="currentImgPath" :background="false" :autoCrop="false"/> -->
     </div>
     <div class="image-shadow" v-show="showImgShadow" @transitionend="transitionend">
         <img id="image-shadow" class="image-content-shadow" :class="{'image-content-shadow-fade': isImgShadowFade}" 
             :src="shadowImgPath" :style="shadowTransform">
     </div>
-    <!-- <div class="gallery-zone" style="display:none">
-        <ul id="images">
-            <li v-for="(path, index) in imgPathInDir" :key="index">
-                <img class="gallery-content" :src="path">
-            </li>
-        </ul>
-    </div> -->
-    <div class='action-bar-container' v-show="showActionBar" ref="$actionBar">
-        <div class="action-box action-bar">
-            <button class="button is-rounded is-hovered btn-nav" @click="preImage">
-                <span class="icon">
-                    <font-awesome-icon :icon="['fas', 'caret-left']" size="lg"/>     
-                </span>
-            </button>
-            <button class="button is-rounded is-hovered btn-nav" @click="nextImage">                
-                <span class="icon">
-                    <font-awesome-icon :icon="['fas', 'caret-right']" size="lg"/>     
-                </span></button>
-            <button class="button is-rounded is-hovered btn-fun" @click="resetImage">
-                <span class="icon">
-                    <font-awesome-icon :icon="['fas', 'expand']"/>     
-                </span>
-            </button>
-            <button class="button is-rounded is-hovered btn-fun" @click="toggleFullScreen">
-                <span class="icon">
-                    <font-awesome-icon :icon="['fas', 'expand-arrows-alt']"/>         
-                </span>
-            </button>
-            <button class="button is-rounded is-hovered btn-fun" @click="openFile">
-                <span class="icon">
-                    <font-awesome-icon :icon="['far', 'folder-open']"/>         
-                </span>
-            </button>
+    <transition name="fade-action-bar">
+        <div class='action-bar-container' v-show="showActionBar">
+            <div class="action-box action-bar">
+                <button class="button is-rounded is-hovered btn-nav" @click="preImage">
+                    <span class="icon">
+                        <font-awesome-icon :icon="['fas', 'caret-left']" size="lg"/>     
+                    </span>
+                </button>
+                <button class="button is-rounded is-hovered btn-nav" @click="nextImage">                
+                    <span class="icon">
+                        <font-awesome-icon :icon="['fas', 'caret-right']" size="lg"/>     
+                    </span></button>
+                <button class="button is-rounded is-hovered btn-fun" v-if="!isSlideshow" @click="doSlideshow">
+                    <span class="icon">
+                        <font-awesome-icon :icon="['fas', 'video']" size="sm"/>     
+                    </span>
+                </button>
+                <button class="button is-rounded is-hovered btn-fun" v-else @click="stopSlideshow">
+                    <span class="icon">
+                        <font-awesome-icon :icon="['fas', 'stop']" size="sm"/>     
+                    </span>
+                </button>                
+                <button class="button is-rounded is-hovered btn-fun" @click="resetImage">
+                    <span class="icon">
+                        <font-awesome-icon :icon="['fas', 'expand']"/>     
+                    </span>
+                </button>
+                <button class="button is-rounded is-hovered btn-fun" @click="toggleFullScreen">
+                    <span class="icon">
+                        <font-awesome-icon :icon="['fas', 'expand-arrows-alt']"/>         
+                    </span>
+                </button>
+                <button class="button is-rounded is-hovered btn-fun" @click="openFile">
+                    <span class="icon">
+                        <font-awesome-icon :icon="['far', 'folder-open']"/>         
+                    </span>
+                </button>
+                <button class="button is-rounded is-hovered btn-fun" @click="showSetting = !showSetting">
+                    <span class="icon">
+                        <font-awesome-icon :icon="['far', 'folder-open']"/>         
+                    </span>
+                </button>
+            </div>
         </div>
-    </div>
-    <div class="nav-box nav-box-left" v-bind:class="{ navActive: showNavLeft }"
-        @click="preImage" @mouseover="onMouseMoveNavLeft" @mouseout="onMouseMoveNavLeft">
-        <span class="icon">
-            <font-awesome-icon :icon="['fas', 'angle-left']" size="6x"/>         
-        </span>
-    </div>
-    <div class="nav-box nav-box-right" v-bind:class="{ navActive: showNavRight }" 
-        @click="nextImage" @mouseover="onMouseMoveNavRight"  @mouseout="onMouseMoveNavRight">
-        <span class="icon">
-            <font-awesome-icon :icon="['fas', 'angle-right']" size="6x"/>         
-        </span>
-    </div>
+    </transition>
+    <transition name="fade-nav-box-left">
+        <div class="nav-box nav-box-left" v-show="showNavLeft" @click="onNavLeftClick" @mouseleave="showNavLeft = false">
+            <span class="icon">
+                <font-awesome-icon :icon="['fas', 'angle-left']" size="6x"/>         
+            </span>
+        </div>
+    </transition>
+    <transition name="fade-nav-box-right">
+        <div class="nav-box nav-box-right" v-show="showNavRight" @click="onNavRightClick" @mouseleave="showNavRight = false">
+            <span class="icon">
+                <font-awesome-icon :icon="['fas', 'angle-right']" size="6x"/>         
+            </span>
+        </div>
+    </transition>
+    <div class="modal" :class="{'is-active': showSetting}">
+        <div class="modal-background" @click="showSetting = false"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Setting</p>
+                <button class="delete" aria-label="close" @click="showSetting = false"></button>
+            </header>
+            <section class="modal-card-body">
+                <p>setting time of slideshow</p>
+                   <v-slider
+                    v-model="ex3.val"
+                    :label="ex3.label"
+                    :thumb-color="ex3.color"
+                    thumb-label="always"
+                    ></v-slider>
+            </section>
+        </div>
+    </div>    
   </div>
 </template>
 <script>
@@ -96,6 +120,7 @@ export default {
       showImg: true,
       showImgShadow: false,
       showActionBar: true,
+      showSetting: false,
       isMouseDown: false,
       isImgFade: false,
       isImgShadowFade: false,
@@ -108,9 +133,14 @@ export default {
         originX: 0,
         originY: 0,
         padX: 0,
-        padY: 0
+        padY: 0,
+        cursor: 'default'
       },
-      shadowTransform: {}
+      shadowTransform: {},
+      isSlideshow: false,
+      slideshowInterval: null,
+      slideshowTime: 5000,
+      ex3: { label: 'thumb-color', val: 50, color: 'red' }
     }
   },
   computed: {
@@ -144,12 +174,14 @@ export default {
       })
       if (openImgPath != null && openImgPath.length > 0) {
         this.setCurrentFile(openImgPath[0])
+        this.stopSlideshow()
       }
     },
     getTransformsCss (t) {
       return {
         transform: `scale(${t.scaleX}, ${t.scaleY}) translate(${t.translateX}px, ${t.translateY}px)`,
-        transformOrigin: `${t.originX}px ${t.originY}px`
+        transformOrigin: `${t.originX}px ${t.originY}px`,
+        cursor: t.cursor
       }
     },
     resetImage () {
@@ -164,7 +196,8 @@ export default {
         padX: 0,
         padY: 0,
         mouseX: 0,
-        mouseY: 0
+        mouseY: 0,
+        cursor: 'default'
       }
     },
     setCurrentFile (filePath) {
@@ -190,6 +223,14 @@ export default {
           }
         })
       })
+    },
+    onNavLeftClick () {
+      this.preImage()
+      this.stopSlideshow()
+    },
+    onNavRightClick () {
+      this.nextImage()
+      this.stopSlideshow()
     },
     preImage () {
       if (this.imgPathInDir.length > 0) {
@@ -234,12 +275,6 @@ export default {
         }
       }
     },
-    onMouseMoveNavLeft () {
-      this.showNavLeft = !this.showNavLeft
-    },
-    onMouseMoveNavRight () {
-      this.showNavRight = !this.showNavRight
-    },
     toggleFullScreen () {
       ipcRenderer.send('toggleFullScreen')
     },
@@ -250,16 +285,21 @@ export default {
         this.isImgFade = true
         // this.isImgShadowFade = true
         this.debugLog('13 image fade')
-      }, 10)
+      }, 50)
       this.debugLog('11')
       setTimeout(() => {
         // this.isImgFade = true
         this.debugLog('14 image shadow fade start')
-        this.resetImage()
+        if (!this.isSlideshow) {
+          this.resetImage()
+        }
         this.isImgShadowFade = true
         this.debugLog('15 image shadow fade end')
-      }, 10)
+      }, 100)
       this.debugLog('12')
+    },
+    transitionendImg: function () {
+      this.debugLog('30 img transitionend')
     },
     transitionend: function () {
       this.debugLog('20 transitionend')
@@ -271,6 +311,9 @@ export default {
       e.preventDefault()
       e.stopPropagation()
 
+      if (this.isSlideshow) {
+        return
+      }
       // Calculate the offset after resetting the origin
       this.transform.padX = (this.transform.scaleX - 1) / this.transform.scaleX * (e.x - this.transform.originX)
       this.transform.padY = (this.transform.scaleY - 1) / this.transform.scaleY * (e.y - this.transform.originY)
@@ -315,24 +358,69 @@ export default {
     onMouseMove: function (e) {
       e.preventDefault()
       e.stopPropagation()
-      if (this.isMouseDown && this.moveable) {
+
+      // Set image transform
+      if (this.isMouseDown && this.moveable && !this.isSlideshow) {
         this.transform.translateX -= (this.transform.mouseX - e.x) / this.transform.scaleX
         this.transform.translateY -= (this.transform.mouseY - e.y) / this.transform.scaleY
 
         this.transform.mouseX = e.x
         this.transform.mouseY = e.y
       }
-      let actionBarHeight = this.$refs.$actionBar.clientHeight
-      console.log(e.x, e.y, window.innerHeight - actionBarHeight - 40)
-      if (e.y < (window.innerHeight - actionBarHeight - 40)) {
-        this.showActionBar = false
+
+      // Set action bar to display on/off
+      let actionBarHeight = 60
+      // console.log(e.x, e.y, window.innerHeight - actionBarHeight - 100)
+      if (e.y > window.innerHeight - 10 || e.y < (window.innerHeight - actionBarHeight - 50)) {
+        if (this.showActionBar) {
+          this.showActionBar = false
+        }
       } else {
         this.showActionBar = true
       }
+
+      // Set left navigate box to display on/off
+      let navBoxWidth = window.innerWidth * 0.075
+      // console.log(e.x, navBoxWidth + 50)
+      if (e.x < (navBoxWidth + 20)) {
+        this.showNavLeft = true
+      } else {
+        if (this.showNavLeft) {
+          this.showNavLeft = false
+        }
+      }
+      // Set right navigate box to display on/off
+      // console.log(e.x, navBoxWidth + 50)
+      if (e.x > (window.innerWidth - navBoxWidth - 20)) {
+        this.showNavRight = true
+      } else {
+        if (this.showNavRight) {
+          this.showNavRight = false
+        }
+      }
     },
     onDbClick: function (e) {
-      console.log('db click !!!')
       this.toggleFullScreen()
+      //   clearInterval(this.isSlideshow)
+      //   this.isSlideshow = setInterval(() => {
+      //     this.nextImage()
+      //   }, 2000)
+    },
+    doSlideshow: function (e) {
+      this.isSlideshow = true
+      this.showActionBar = false
+      this.transform.cursor = 'none'
+      let t = this.slideshowTime
+      this.slideshowInterval = setInterval(() => {
+        this.nextImage()
+      }, t)
+    },
+    stopSlideshow: function (e) {
+      if (this.isSlideshow) {
+        this.isSlideshow = false
+        this.transform.cursor = 'default'
+        clearInterval(this.slideshowInterval)
+      }
     },
     debugLog: (key) => {
       console.log(key, (new Date()) - delay)

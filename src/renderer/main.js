@@ -8,17 +8,21 @@ import store from './store'
 import 'bulma/css/bulma.css'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faSync, faUndo, faExpand, faExpandArrowsAlt, faCaretLeft, faCaretRight, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
+import { faSync, faUndo, faExpand, faExpandArrowsAlt, faCaretLeft, faCaretRight, faAngleLeft, faAngleRight, faVideo, faStop } from '@fortawesome/free-solid-svg-icons'
 import { faFolderOpen } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+// import {vuetify} from 'vuetify'
+import 'vuetify/dist/vuetify.min.css'
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
 
-library.add(faFolderOpen, faSync, faUndo, faExpandArrowsAlt, faExpand, faCaretLeft, faCaretRight, faAngleLeft, faAngleRight)
+library.add(faFolderOpen, faSync, faUndo, faExpandArrowsAlt, faExpand, faCaretLeft, faCaretRight, faAngleLeft, faAngleRight, faVideo, faStop)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
-Vue.config.productionTip = false
+// Vue.component('v-slider', vSlider)
 
+Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
   components: { App },

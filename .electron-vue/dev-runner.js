@@ -73,8 +73,9 @@ function startRenderer () {
         }
       }
     )
-
-    server.listen(9080)
+    server.listen(9990).on('error', err => {
+      console.log(err)
+    })
   })
 }
 

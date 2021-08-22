@@ -11,6 +11,7 @@
         <img id="image-shadow" class="image-content-shadow" :class="{'image-content-shadow-fade': isImgShadowFade}" 
             :src="shadowImgPath" :style="shadowTransform">
     </div>
+    <img id="image-test" :src="currentImgPath" style="max-width:100%;max-height:100%;object-fit: scale-down;" >
     <transition name="fade-action-bar">
         <div class='action-bar-container' v-show="showActionBar">
             <div class="action-box action-bar">
@@ -78,19 +79,36 @@
                 <button class="delete" aria-label="close" @click="showSetting = false"></button>
             </header>
             <section class="modal-card-body">
-                <p>setting time of slideshow</p>
-                   <v-slider
-                    v-model="ex3.val"
-                    :label="ex3.label"
-                    :thumb-color="ex3.color"
-                    thumb-label="always"
-                    ></v-slider>
+                <p>Set the slideshow interval time.</p>
+                <!-- <v-slider v-model="slideshowTime.minutes" label="minutes" thumb-label="always" max="60" min="0"></v-slider>
+                <v-slider v-model="slideshowTime.seconds" label="seconds" thumb-label="always" max="60" min="0"></v-slider> -->
+                <div class="buttons has-addons">
+                    <button class="button" :class="{'is-info': slideshowTime.seconds == 1}" @click="setSlideshowTime(0, 1)">&nbsp;&nbsp;1&nbsp;sec&nbsp;&nbsp;</button>
+                    <button class="button" :class="{'is-info': slideshowTime.seconds == 3}" @click="setSlideshowTime(0, 3)">&nbsp;&nbsp;3&nbsp;sec&nbsp;&nbsp;</button>
+                    <button class="button" :class="{'is-info': slideshowTime.seconds == 5}" @click="setSlideshowTime(0, 5)">&nbsp;&nbsp;5&nbsp;sec&nbsp;&nbsp;</button>
+                    <button class="button" :class="{'is-info': slideshowTime.seconds == 10}" @click="setSlideshowTime(0, 10)">&nbsp;10&nbsp;sec&nbsp;&nbsp;</button>
+                    <button class="button" :class="{'is-info': slideshowTime.seconds == 30}" @click="setSlideshowTime(0, 30)">&nbsp;30&nbsp;sec&nbsp;&nbsp;</button>
+                </div>
+                <div class="buttons has-addons">
+                    <button class="button" :class="{'is-info': slideshowTime.minutes == 1}" @click="setSlideshowTime(1, 0)">&nbsp;&nbsp;1&nbsp;min&nbsp;&nbsp;</button>
+                    <button class="button" :class="{'is-info': slideshowTime.minutes == 3}" @click="setSlideshowTime(3, 0)">&nbsp;&nbsp;3&nbsp;min&nbsp;&nbsp;</button>
+                    <button class="button" :class="{'is-info': slideshowTime.minutes == 5}" @click="setSlideshowTime(5, 0)">&nbsp;&nbsp;5&nbsp;min&nbsp;&nbsp;</button>
+                    <button class="button" :class="{'is-info': slideshowTime.minutes == 10}" @click="setSlideshowTime(10, 0)">&nbsp;10&nbsp;min&nbsp;&nbsp;</button>
+                    <button class="button" :class="{'is-info': slideshowTime.minutes == 30}" @click="setSlideshowTime(30, 0)">&nbsp;30&nbsp;min&nbsp;&nbsp;</button>
+                </div>
+                <!-- 我并不太喜欢大部分的图片阅览工具，所以我自己做了一个，如果你觉得这个小巧工具对你有帮助，你可以请我喝一杯咖啡，鼓励我继续改进它，非常感谢！-->
+                <p>
+                    I couldn't find a smart image tool, so I made one in my own time. <br>
+                    If you think this is helpful to you, you can <a href=#>buy me a coffee</a> encourage me to continue improving it.Thank you very much!<br>
+                    &#128150;&#9749;&#128170;&#128640;
+                </p>                
             </section>
         </div>
     </div>    
   </div>
 </template>
 <script>
+/* global Caman */
 import path from 'path'
 import fs from 'fs'
 import { remote, ipcRenderer } from 'electron'
@@ -100,6 +118,10 @@ import { remote, ipcRenderer } from 'electron'
 // import 'viewerjs/dist/viewer.css'
 // import 'viewerjs/dist/viewer.css'
 import '@/assets/css/MainPage.css'
+
+// const Caman = require('caman').Caman
+// import Caman from 'caman/dist/caman.js'
+// const Caman = require('caman/dist/caman.js').Caman
 let delay = new Date()
 export default {
   name: 'main-page',
@@ -139,10 +161,14 @@ export default {
       shadowTransform: {},
       isSlideshow: false,
       slideshowInterval: null,
-      slideshowTime: 5000,
-      ex3: { label: 'thumb-color', val: 50, color: 'red' }
+      slideshowTime: {minutes: 0, seconds: 5}
     }
   },
+  // created () {
+  //   this.loadScript('caman/dist/caman.full.min.js', () => {
+  //     console.log('caman is ok !')
+  //   })
+  // },
   computed: {
     imageTransforms: function () {
       return this.getTransformsCss(this.transform)
@@ -164,6 +190,9 @@ export default {
       e.preventDefault()
       e.stopPropagation()
     })
+    // let recaptchaScript = document.createElement('script')
+    // recaptchaScript.setAttribute('src', 'node_modules/caman/dist/caman.full.min.js')
+    // document.head.appendChild(recaptchaScript)
   },
   methods: {
     openFile () {
@@ -227,6 +256,13 @@ export default {
     onNavLeftClick () {
       this.preImage()
       this.stopSlideshow()
+      let fsSave = this.saveCallback
+      Caman('#image-test', function () {
+        this.brightness(30)
+        this.render(function () {
+          fsSave(document.getElementById('image-test'), './output.jpg')
+        })
+      })
     },
     onNavRightClick () {
       this.nextImage()
@@ -410,7 +446,7 @@ export default {
       this.isSlideshow = true
       this.showActionBar = false
       this.transform.cursor = 'none'
-      let t = this.slideshowTime
+      let t = (this.slideshowTime.minutes * 60 + this.slideshowTime.seconds) * 1000
       this.slideshowInterval = setInterval(() => {
         this.nextImage()
       }, t)
@@ -421,6 +457,27 @@ export default {
         this.transform.cursor = 'default'
         clearInterval(this.slideshowInterval)
       }
+    },
+    setSlideshowTime: function (min, sec) {
+      this.slideshowTime.minutes = min
+      this.slideshowTime.seconds = sec
+    },
+    saveCallback: async function (canvas, filePath) {
+      // Get the DataUrl from the Canvas
+    //   const url = canvas.toDataURL('image/jpg', 0.8)
+    //   // remove Base64 stuff from the Image
+    //   const base64Data = url.replace(/^data:image\/png;base64,/, '')
+    //   fs.writeFile(filePath, base64Data, 'base64', function (err) {
+    //     console.log(err)
+    //   })
+
+      // const blob = new Promise((resolve) => canvas.toBlob(blob => resolve(blob), 'image/jpg', 0.8))
+      canvas.toBlob(async function (blob) {
+        const buffer = Buffer.from(await blob.arrayBuffer())
+        fs.writeFile(filePath, buffer, 'binary', function (err) {
+          console.log(err)
+        })
+      }, 'image/jpeg', 0.8)
     },
     debugLog: (key) => {
       console.log(key, (new Date()) - delay)

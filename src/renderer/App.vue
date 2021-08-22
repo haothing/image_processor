@@ -1,6 +1,8 @@
 <template>
   <div id="app" class="app">
-    <router-view></router-view>
+    <v-app>
+        <router-view></router-view>
+    </v-app>
   </div>
 </template>
 
@@ -11,7 +13,8 @@
 </script>
 
 <style>
-.app {
+.app, #app {
     height: 100%;
+    background-color: #000000!important;
 }
 </style>

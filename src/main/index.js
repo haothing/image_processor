@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, BrowserWindow, session, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'path'
 
 import '../renderer/store'
@@ -31,11 +31,11 @@ function createWindow () {
       webSecurity: false,
       nodeIntegration: true,
       contextIsolation: false,
-      enableRemoteModule: true,
-      allowRunningInsecureContent: true
+      enableRemoteModule: true
     },
     autoHideMenuBar: true
   })
+
   mainWindow.removeMenu()
   mainWindow.loadURL(winURL)
   mainWindow.webContents.on('before-input-event', (event, input) => {
@@ -45,6 +45,10 @@ function createWindow () {
       }
       event.preventDefault()
     }
+  })
+  mainWindow.webContents.session.protocol.registerFileProtocol('file', (request, callback) => {
+    const url = request.url.substr(8)
+    callback(decodeURI(url))
   })
   mainWindow.on('close', (e) => {
     e.preventDefault()
@@ -56,17 +60,29 @@ function createWindow () {
   })
 
   if (process.env.NODE_ENV === 'development') {
-    // require('vue-devtools').install()
-    session.defaultSession.loadExtension('F:/repositories/workspaces/image_processor/node_modules/vue-devtools/vender', { allowFileAccess: true })
-    mainWindow.webContents.on('did-frame-finish-load', () => {
-      mainWindow.webContents.once('devtools-opened', () => {
-        mainWindow.focus()
-        // Add chrom vue-devtools extension
-      })
-    })
+    // session.defaultSession.loadExtension('C:/Users/cross/AppData/Roaming/Electron/extensions/nhdogjmejiglipccpnnnanhbledajbpd', { allowFileAccess: true })
+    // session.defaultSession.loadExtension(
+    //  'C:/Users/cross/AppData/Local/Google/Chrome/User Data/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/5.3.4_0', { allowFileAccess: true })
+
+    // mainWindow.webContents.on('did-frame-finish-load', () => {
+    //   mainWindow.webContents.once('devtools-opened', () => {
+    //     mainWindow.focus()
+    //     // Add chrom vue-devtools extension
+    //   })
+    //   // open electron debug
+    //   console.log('Opening dev tools')
+    //   mainWindow.webContents.openDevTools()
+    // })
   }
 }
+app.allowRendererProcessReuse = false
 app.on('ready', createWindow)
+
+// const devToolsPath = 'C:/Users/cross/AppData/Local/Google/Chrome/User Data/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/5.3.4_0'
+// app.whenReady().then(async () => {
+//   await session.defaultSession.loadExtension(devToolsPath)
+// })
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
@@ -77,9 +93,19 @@ app.on('activate', () => {
     createWindow()
   }
 })
+
 ipcMain.on('toggleFullScreen', (event, args) => {
   mainWindow.setFullScreen(!mainWindow.isFullScreen())
 })
+
+// const Caman = require('caman').Caman
+// Caman('F:/repositories/workspaces/image_processor/static/images/5.jpg', function () {
+//   this.brightness(40)
+//   this.render(function () {
+//     this.save('./output.png')
+//   })
+// })
+
 /**
  * Auto Updater
  *

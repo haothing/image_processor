@@ -8,9 +8,9 @@ import store from './store'
 import 'bulma/css/bulma.css'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faSync, faUndo, faExpand, faExpandArrowsAlt, faCaretLeft, faCaretRight,
-  faAngleLeft, faAngleRight, faVideo, faStop, faHeart } from '@fortawesome/free-solid-svg-icons'
-import { faFolderOpen, faKissBeam } from '@fortawesome/free-regular-svg-icons'
+import { faSync, faUndo, faExpand, faCaretLeft, faCaretRight,
+  faAngleLeft, faAngleRight, faVideo, faStop, faCog, faSlidersH } from '@fortawesome/free-solid-svg-icons'
+import { faFolderOpen, faWindowRestore } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 // import Vuetify from 'vuetify'
@@ -21,8 +21,8 @@ import vuetify from '@/plugins/vuetify'
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
 
-library.add(faFolderOpen, faSync, faUndo, faExpandArrowsAlt, faExpand, faCaretLeft, faCaretRight,
-  faAngleLeft, faAngleRight, faVideo, faStop, faKissBeam, faHeart)
+library.add(faFolderOpen, faSync, faUndo, faWindowRestore, faExpand, faCaretLeft, faCaretRight,
+  faAngleLeft, faAngleRight, faVideo, faStop, faCog, faSlidersH)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 // Vue.component('v-slider', vSlider)
 

@@ -5,9 +5,9 @@ html, body {
 .cus-icon {
     color: #000000;
 }
-/* ::-webkit-scrollbar {
+::-webkit-scrollbar {
     display: none;
-} */
+}
 .main-content {
     height: 100%;
     width: 100%;
@@ -59,7 +59,7 @@ html, body {
     width: 7.5%;
     height: 100%; 
 }
-.image-zone {
+.image-zone, image-editor {
     height: 100%;
     width: 100%;
     display: flex;

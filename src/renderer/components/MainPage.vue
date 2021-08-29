@@ -11,7 +11,9 @@
         <img id="image-shadow" class="image-content-shadow" :class="{'image-content-shadow-fade': isImgShadowFade}" 
             :src="shadowImgPath" :style="shadowTransform">
     </div>
-    <img id="image-test" :src="currentImgPath" style="max-width:100%;max-height:100%;object-fit: scale-down;" >
+    <div class="image-editor">
+        <canvas id="image-editor" :src="currentImgPath" v-show="showImgEditor"/>
+    </div>
     <transition name="fade-action-bar">
         <div class='action-bar-container' v-show="showActionBar">
             <div class="action-box action-bar">
@@ -23,35 +25,41 @@
                 <button class="button is-rounded is-hovered btn-nav" @click="nextImage">                
                     <span class="icon">
                         <font-awesome-icon :icon="['fas', 'caret-right']" size="lg"/>     
-                    </span></button>
-                <button class="button is-rounded is-hovered btn-fun" v-if="!isSlideshow" @click="doSlideshow">
-                    <span class="icon">
-                        <font-awesome-icon :icon="['fas', 'video']" size="sm"/>     
                     </span>
                 </button>
-                <button class="button is-rounded is-hovered btn-fun" v-else @click="stopSlideshow">
+                <button class="button is-rounded is-hovered btn-fun" @click="openFile" title="Open File">
                     <span class="icon">
-                        <font-awesome-icon :icon="['fas', 'stop']" size="sm"/>     
+                        <font-awesome-icon :icon="['far', 'folder-open']"/>         
                     </span>
-                </button>                
-                <button class="button is-rounded is-hovered btn-fun" @click="resetImage">
+                </button>
+                <button class="button is-rounded is-hovered btn-fun" @click="resetImage" title="Reset Image">
                     <span class="icon">
                         <font-awesome-icon :icon="['fas', 'expand']"/>     
                     </span>
                 </button>
-                <button class="button is-rounded is-hovered btn-fun" @click="toggleFullScreen">
+                <button class="button is-rounded is-hovered btn-fun" @click="toggleFullScreen" title="Maximize Window">
                     <span class="icon">
-                        <font-awesome-icon :icon="['fas', 'expand-arrows-alt']"/>         
+                        <font-awesome-icon :icon="['far', 'window-restore']"/>         
                     </span>
                 </button>
-                <button class="button is-rounded is-hovered btn-fun" @click="openFile">
+                <button class="button is-rounded is-hovered btn-fun" v-if="!isSlideshow" @click="doSlideshow" title="Start Slideshow">
                     <span class="icon">
-                        <font-awesome-icon :icon="['far', 'folder-open']"/>         
+                        <font-awesome-icon :icon="['fas', 'video']" size="sm"/>     
                     </span>
                 </button>
-                <button class="button is-rounded is-hovered btn-fun" @click="showSetting = !showSetting">
+                <button class="button is-rounded is-hovered btn-fun" v-else @click="stopSlideshow" title="Stop Slideshow">
                     <span class="icon">
-                        <font-awesome-icon :icon="['far', 'folder-open']"/>         
+                        <font-awesome-icon :icon="['fas', 'stop']" size="sm"/>     
+                    </span>
+                </button>
+                <button class="button is-rounded is-hovered btn-fun" @click="startEditImage" title="Edit Image">
+                    <span class="icon">
+                        <font-awesome-icon :icon="['fas', 'sliders-h']"/>         
+                    </span>
+                </button>                           
+                <button class="button is-rounded is-hovered btn-fun" @click="showSetting = !showSetting" title="Setting">
+                    <span class="icon">
+                        <font-awesome-icon :icon="['fas', 'cog']"/>         
                     </span>
                 </button>
             </div>
@@ -141,6 +149,7 @@ export default {
       showNavRight: false,
       showImg: true,
       showImgShadow: false,
+      showImgEditor: false,
       showActionBar: true,
       showSetting: false,
       isMouseDown: false,
@@ -164,11 +173,6 @@ export default {
       slideshowTime: {minutes: 0, seconds: 5}
     }
   },
-  // created () {
-  //   this.loadScript('caman/dist/caman.full.min.js', () => {
-  //     console.log('caman is ok !')
-  //   })
-  // },
   computed: {
     imageTransforms: function () {
       return this.getTransformsCss(this.transform)
@@ -190,9 +194,6 @@ export default {
       e.preventDefault()
       e.stopPropagation()
     })
-    // let recaptchaScript = document.createElement('script')
-    // recaptchaScript.setAttribute('src', 'node_modules/caman/dist/caman.full.min.js')
-    // document.head.appendChild(recaptchaScript)
   },
   methods: {
     openFile () {
@@ -256,13 +257,6 @@ export default {
     onNavLeftClick () {
       this.preImage()
       this.stopSlideshow()
-      let fsSave = this.saveCallback
-      Caman('#image-test', function () {
-        this.brightness(30)
-        this.render(function () {
-          fsSave(document.getElementById('image-test'), './output.jpg')
-        })
-      })
     },
     onNavRightClick () {
       this.nextImage()
@@ -478,6 +472,15 @@ export default {
           console.log(err)
         })
       }, 'image/jpeg', 0.8)
+    },
+    startEditImage: () => {
+      let fsSave = this.saveCallback
+      Caman('#image-test', function () {
+        this.brightness(30)
+        this.render(function () {
+          fsSave(document.getElementById('image-test'), './output.jpg')
+        })
+      })
     },
     debugLog: (key) => {
       console.log(key, (new Date()) - delay)
